@@ -1,0 +1,17 @@
+{
+  "name": "keylayer-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "KeyLayer 双端工作区：共享规格驱动 macOS (Swift) 与 Windows (Tauri/Rust) 构建",
+  "scripts": {
+    "spec": "node scripts/gen-sources.mjs && node scripts/check.mjs",
+    "check": "node scripts/check.mjs",
+    "test": "node spec/verify.mjs",
+    "build:mac": "bash scripts/build.sh",
+    "build:win": "npm --prefix windows install && npm --prefix windows run build"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "允许托盘面板调用核心命令",
+  "windows": ["panel"],
+  "permissions": ["core:default"]
+}

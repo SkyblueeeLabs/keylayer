@@ -1,0 +1,38 @@
+# macOS
+.DS_Store
+
+# 构建 / 运行产物
+/KeyLayer.app/
+/KeyLayer.app.zip
+/KeyLayer
+/KeyLayer.runtime.log
+# 改名前的旧产物，避免误提交
+/KeyMap.app/
+/KeyMap.app.zip
+/KeyMapMac
+/KeyMap.runtime.log
+/assets/icons/AppIcon.iconset/
+
+# 本机工作区数据（不属于项目内容，请勿删除）
+/.workbuddy/
+
+# Tauri / Rust / Node
+/windows/node_modules/
+/windows/src-tauri/target/
+/windows/src-tauri/gen/
+/windows/dist/
+
+# Swift / Xcode
+*.xcodeproj/
+*.xcworkspace/
+DerivedData/
+.swiftpm/
+*.o
+*.swiftdeps
+
+# 临时文件
+*.cstemp
+*.tmp
+
+# 历史二进制：内嵌 GPLv2 的 AutoHotkey 解释器，不随仓库分发
+/original/KeyMap.exe

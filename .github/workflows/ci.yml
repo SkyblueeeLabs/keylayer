@@ -1,0 +1,44 @@
+name: KeyLayer check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  shared:
+    name: 共享规格与代码生成一致性
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run check
+      - run: npm test
+
+  macos:
+    name: macOS 编译与自测
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 编译 CLI 并跑 40 项自测
+        run: |
+          swiftc -O src/KeyLayerCore.swift src/Generated.swift src/KeyLayerCLI.swift -o /tmp/kl-cli
+          /tmp/kl-cli --self-test
+      - name: 编译菜单栏 App（不打包签名）
+        run: swiftc -O src/KeyLayerCore.swift src/Generated.swift src/GeneratedTokens.swift src/KeyLayerApp.swift -o /tmp/kl-app
+      - name: 校验设计令牌生成文件
+        run: swiftc -typecheck src/GeneratedTokens.swift
+
+  windows:
+    name: Windows Rust 测试
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: dtolnay/rust-toolchain@stable
+      - run: npm --prefix windows install
+      - name: cargo test（复用共享 40 项用例）
+        run: cd windows/src-tauri && cargo test

@@ -1,0 +1,38 @@
+/* 自动生成 — 请勿手动编辑 */
+/* 来源: ui/tokens.json */
+/* 重新生成: npm run spec */
+/* spec-hash: c44150cfb3a7 */
+
+:root {
+  --ink: #2c2c2a;
+  --muted: #5f5e5a;
+  --edge: #d3d1c7;
+  --line: #eceae4;
+  --blue-border: #b5d4f4;
+  --amber-border: #fac775;
+  --green-border: #9fe1cb;
+  --purple-border: #cecbf6;
+  --blue: #185fa5;
+  --blue-bg: #e6f1fb;
+  --amber: #ba7517;
+  --amber-bg: #faeeda;
+  --green: #0f6e56;
+  --green-bg: #e1f5ee;
+  --purple: #534ab7;
+  --purple-bg: #eeedfe;
+  --panel-width: 320px;
+  --panel-padding: 16px;
+  --panel-radius: 14px;
+  --gap: 12px;
+  --row-gap: 8px;
+  --cap-gap: 6px;
+  --cap-width: 58px;
+  --cap-key-width: 40px;
+  --cap-height: 26px;
+  --cap-radius: 5px;
+  --dot-size: 8px;
+  --title-size: 15px;
+  --body-size: 13px;
+  --caption-size: 12px;
+  --micro-size: 11px;
+}

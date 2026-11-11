@@ -1,0 +1,23 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "KeyLayer",
+  "version": "0.1.0",
+  "identifier": "com.skyblueee.keylayer",
+  "build": {
+    "beforeDevCommand": "npx --yes serve -l 1420 ../ui",
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../../ui"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [],
+    "security": { "csp": null }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis", "msi"],
+    "icon": ["icons/icon.ico"],
+    "shortDescription": "KeyLayer - Windows 改键托盘工具",
+    "longDescription": "把 Alt+i/j/k/l/u/o 映射为光标移动与行首行尾跳转的托盘小工具"
+  }
+}

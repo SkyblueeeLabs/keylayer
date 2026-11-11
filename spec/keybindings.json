@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "description": "KeyLayer 双平台共享行为规格。来源: docs/REVERSE_ENGINEERING.md (AHK 脚本 39-61 行) 与 macOS src/KeyLayerCore.swift。这是逻辑与行为的重建规格，不是原始源码。",
+  "triggerModifiers": ["alt", "command"],
+  "cmdOnlyOption": true,
+  "shiftPreservesSelection": true,
+  "controlCombosPassThrough": true,
+  "bindings": [
+    { "key": "i", "win": 73, "mac": 34, "action": "arrow-up",     "label": "↑",       "group": "direction" },
+    { "key": "j", "win": 74, "mac": 38, "action": "arrow-left",   "label": "←",       "group": "direction" },
+    { "key": "k", "win": 75, "mac": 40, "action": "arrow-down",   "label": "↓",       "group": "direction" },
+    { "key": "l", "win": 76, "mac": 37, "action": "arrow-right",  "label": "→",       "group": "direction" },
+    { "key": "u", "win": 85, "mac": 32, "action": "line-start",   "label": "行首",    "group": "direction" },
+    { "key": "o", "win": 79, "mac": 31, "action": "line-end",     "label": "行尾",    "group": "direction" },
+    { "key": "d", "win": 68, "mac": 2,  "action": "delete-line",  "label": "删整行",  "group": "action" },
+    { "key": "h", "win": 72, "mac": 4,  "action": "scroll-down",  "label": "滚↓",     "group": "scroll" },
+    { "key": "y", "win": 89, "mac": 16, "action": "scroll-up",    "label": "滚↑",     "group": "scroll" },
+    { "key": "n", "win": 78, "mac": 45, "action": "scroll-left",  "label": "滚←",     "group": "scroll" },
+    { "key": "m", "win": 77, "mac": 46, "action": "scroll-right", "label": "滚→",     "group": "scroll" }
+  ],
+  "actionKeyCodes": {
+    "arrow-up":    { "win": 38, "mac": 126 },
+    "arrow-down":  { "win": 40, "mac": 125 },
+    "arrow-left":  { "win": 37, "mac": 123 },
+    "arrow-right": { "win": 39, "mac": 124 },
+    "line-start":  { "win": 36, "mac": 123, "macMod": "command", "note": "Windows VK_HOME / macOS Command+Left" },
+    "line-end":    { "win": 35, "mac": 124, "macMod": "command", "note": "Windows VK_END / macOS Command+Right" }
+  },
+  "scroll": { "unit": "line", "amount": 3, "note": "方向受系统自然滚动设置影响，需实测" },
+  "sequences": {
+    "delete-line": {
+      "win":  ["HOME", "SHIFT+END", "SHIFT+RIGHT", "BACKSPACE", "HOME"],
+      "mac":  ["CMD+LEFT", "CMD+SHIFT+RIGHT", "SHIFT+RIGHT", "DELETE", "CMD+LEFT"],
+      "note": "来自 AHK 脚本 67 行 {Home}+{End}+{Right}{BS}{Home}; 破坏性操作，误触会删整行"
+    }
+  },
+  "modifierRemap": [
+    { "from": "RightAlt",   "win": 165, "mac": 61, "to": "shift", "note": "AHK 33 行 RAlt::Shift; 改 flagsChanged/keyup 状态" },
+    { "from": "RightCtrl",  "win": 163, "mac": 62, "to": "trigger", "note": "AHK >^ 前缀; 仅与 b/g 组合生效" }
+  ],
+  "urlActions": [
+    { "modifier": "RightCtrl", "key": "b", "win": 66, "mac": 11, "url": "https://www.baidu.com" },
+    { "modifier": "RightCtrl", "key": "g", "win": 71, "mac": 5,  "url": "https://www.google.com" }
+  ],
+  "appWhitelist": {
+    "action": "delete-line",
+    "behavior": "pass-through-original-key",
+    "macOSBundleIDs": ["com.microsoft.VSCode", "com.microsoft.VSCodeInsiders", "com.visualstudio.code.oss"],
+    "windowsProcessNames": ["Code.exe"],
+    "source": "AHK 64 行 if WinActive(\"ahk_exe Code.exe\")"
+  },
+  "notPorted": [
+    "KeyMap-translator.py 复制并翻译（外部脚本缺失）",
+    "光标处中/英输入法状态浮动窗（Windows imm32/oleacc 专属）",
+    "中键手势 gtrack 状态机（Mac 无中键，动作为 Windows 特有）",
+    "Win 键组合 #o/#j/#m/#n、F8 窗口置顶、F10 大写锁定、热字符串 ::tabc::",
+    "每 2 小时 Reload（AHK 防卡死，Swift/Rust 版不需要）"
+  ],
+  "scriptCoverage": [
+    { "lines": "18-19", "rule": "~<!Tab up", "behavior": "Alt+Tab 后把鼠标移到窗口左侧", "status": "not-ported", "reason": "依赖 Windows 窗口坐标与激活事件，骨架未实现" },
+    { "lines": "21-31", "rule": "F8", "behavior": "窗口置顶切换", "status": "not-ported", "reason": "Windows 专属窗口管理，未纳入共享规格" },
+    { "lines": "33", "rule": "RAlt::Shift", "behavior": "右 Alt → Shift", "status": "spec-only", "reason": "规格已写；hook.rs 的左右修饰键区分仍是 TODO，运行时未接通" },
+    { "lines": "35", "rule": "$CapsLock", "behavior": "CapsLock → Esc", "status": "system-level", "reason": "两端都建议用系统「修饰键」设置实现，不写进程序" },
+    { "lines": "37", "rule": "F10", "behavior": "切换 CapsLock 状态", "status": "not-ported", "reason": "与 CapsLock→Esc 冲突，未迁移" },
+    { "lines": "39-49", "rule": "!i/k/j/l/u/o", "behavior": "6 键方向 / 行首行尾", "status": "ported", "windowsRuntime": "implemented" },
+    { "lines": "51-61", "rule": "^!i/k/j/l/u/o", "behavior": "Ctrl+Alt 组合加 Shift 选中", "status": "changed", "reason": "macOS 与 Windows 骨架改用 Alt+Shift 保留选区，触发键与原脚本不同" },
+    { "lines": "63-68", "rule": "$!d", "behavior": "VS Code 放行 / 否则删整行", "status": "partial", "reason": "规格有白名单，但 hook.rs 的 front_app 传 None，运行时未生效" },
+    { "lines": "69-80", "rule": "$!h / $!y", "behavior": "VS Code 放行 / 否则滚轮", "status": "partial", "reason": "骨架一律映射为滚轮，未实现 VS Code 分支" },
+    { "lines": "81-86", "rule": "!n / !m", "behavior": "水平滚轮", "status": "ported", "windowsRuntime": "implemented" },
+    { "lines": "87-93", "rule": "#o / #j / #m / #n", "behavior": "Win 键虚拟桌面操作", "status": "not-ported", "reason": "Windows 专属且与系统快捷键冲突" },
+    { "lines": "95-100", "rule": ">^b / >^g", "behavior": "右 Ctrl 打开百度 / Google", "status": "spec-only", "reason": "规格已写；hook.rs 左右 Ctrl 区分仍是 TODO，运行时未接通" },
+    { "lines": "101-110", "rule": ">^f", "behavior": "复制选区并调用翻译脚本", "status": "not-ported", "reason": "KeyMap-translator.py 不在仓库，缺外部依赖" },
+    { "lines": "112-119", "rule": ":::tabc::", "behavior": "热字符串（VS Code 输出 :tabc+Enter，否则 ^w）", "status": "not-ported", "reason": "需要输入序列状态机" },
+    { "lines": "120-167", "rule": "mbutton + gtrack", "behavior": "中键拖拽手势", "status": "not-ported", "reason": "依赖鼠标方向状态机，且动作为 Windows/VS Code 特有" },
+    { "lines": "12, 168-255", "rule": "WatchCaret", "behavior": "光标处中/英输入法状态浮动窗", "status": "not-ported", "reason": "Windows imm32 / oleacc 专属 API" }
+  ],
+  "cases": [
+    { "name": "⌘i → ↑", "key": "i", "mods": ["cmd"], "expect": "arrow-up", "shift": false },
+    { "name": "⌘j → ←", "key": "j", "mods": ["cmd"], "expect": "arrow-left", "shift": false },
+    { "name": "⌘k → ↓", "key": "k", "mods": ["cmd"], "expect": "arrow-down", "shift": false },
+    { "name": "⌘l → →", "key": "l", "mods": ["cmd"], "expect": "arrow-right", "shift": false },
+    { "name": "⌥i → ↑", "key": "i", "mods": ["alt"], "expect": "arrow-up", "shift": false },
+    { "name": "⌥j → ←", "key": "j", "mods": ["alt"], "expect": "arrow-left", "shift": false },
+    { "name": "⌥k → ↓", "key": "k", "mods": ["alt"], "expect": "arrow-down", "shift": false },
+    { "name": "⌥l → →", "key": "l", "mods": ["alt"], "expect": "arrow-right", "shift": false },
+    { "name": "⌘⇧j 保留选区", "key": "j", "mods": ["cmd", "shift"], "expect": "arrow-left", "shift": true },
+    { "name": "⌥⇧j 保留选区", "key": "j", "mods": ["alt", "shift"], "expect": "arrow-left", "shift": true },
+    { "name": "flagsChanged 兜底 ⌥", "key": "i", "mods": [], "held": ["alt"], "expect": "arrow-up", "shift": false },
+    { "name": "单独 i 放行", "key": "i", "mods": [], "expect": "pass" },
+    { "name": "⌃⌘i 放行", "key": "i", "mods": ["ctrl", "cmd"], "expect": "pass" },
+    { "name": "⌃⌥i 放行", "key": "i", "mods": ["ctrl", "alt"], "expect": "pass" },
+    { "name": "⌘a 放行", "key": "a", "mods": ["cmd"], "expect": "pass" },
+    { "name": "cmdOnly 下 ⌥i 放行", "key": "i", "mods": ["alt"], "cmdOnly": true, "expect": "pass" },
+    { "name": "cmdOnly 下 ⌘i 生效", "key": "i", "mods": ["cmd"], "cmdOnly": true, "expect": "arrow-up" },
+    { "name": "⌥u → 行首", "key": "u", "mods": ["alt"], "expect": "line-start", "shift": false },
+    { "name": "⌥o → 行尾", "key": "o", "mods": ["alt"], "expect": "line-end", "shift": false },
+    { "name": "⌘u → 行首", "key": "u", "mods": ["cmd"], "expect": "line-start", "shift": false },
+    { "name": "⌘o → 行尾", "key": "o", "mods": ["cmd"], "expect": "line-end", "shift": false },
+    { "name": "⌥⇧u 选中到行首", "key": "u", "mods": ["alt", "shift"], "expect": "line-start", "shift": true },
+    { "name": "⌥⇧o 选中到行尾", "key": "o", "mods": ["alt", "shift"], "expect": "line-end", "shift": true },
+    { "name": "⌃⌥u 放行", "key": "u", "mods": ["ctrl", "alt"], "expect": "pass" },
+    { "name": "单独 u 放行", "key": "u", "mods": [], "expect": "pass" },
+    { "name": "单独 o 放行", "key": "o", "mods": [], "expect": "pass" },
+    { "name": "⌥d 删整行", "key": "d", "mods": ["alt"], "expect": "delete-line" },
+    { "name": "⌥d VS Code 放行", "key": "d", "mods": ["alt"], "frontApp": "Code.exe", "expect": "pass" },
+    { "name": "⌘d VS Code 放行", "key": "d", "mods": ["cmd"], "frontApp": "Code.exe", "expect": "pass" },
+    { "name": "⌥d VSCodeInsiders 放行", "key": "d", "mods": ["alt"], "frontApp": "Code - Insiders.exe", "expect": "pass" },
+    { "name": "⌥h 滚轮下", "key": "h", "mods": ["alt"], "expect": "scroll-down" },
+    { "name": "⌥y 滚轮上", "key": "y", "mods": ["alt"], "expect": "scroll-up" },
+    { "name": "⌥n 水平滚轮左", "key": "n", "mods": ["alt"], "expect": "scroll-left" },
+    { "name": "⌥m 水平滚轮右", "key": "m", "mods": ["alt"], "expect": "scroll-right" },
+    { "name": "单独 h 放行", "key": "h", "mods": [], "expect": "pass" },
+    { "name": "右Ctrl+b 百度", "key": "b", "mods": ["rightCtrl"], "expect": "open-url:baidu" },
+    { "name": "右Ctrl+g Google", "key": "g", "mods": ["rightCtrl"], "expect": "open-url:google" },
+    { "name": "左Ctrl+b 放行", "key": "b", "mods": ["ctrl"], "expect": "pass" },
+    { "name": "右Ctrl+a 放行", "key": "a", "mods": ["rightCtrl"], "expect": "pass" },
+    { "name": "右⌥ → Shift", "key": "RightAlt", "mods": [], "expect": "shift-down" }
+  ]
+}
