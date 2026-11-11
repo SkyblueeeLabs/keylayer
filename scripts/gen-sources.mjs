@@ -84,7 +84,8 @@ function swiftSource() {
 
 function rustSource() {
   const L = header('//');
-  L.push('#[derive(Clone, Copy)]',
+  L.push('#[allow(dead_code)]',
+    '#[derive(Clone, Copy)]',
     'pub struct Binding {',
     "    pub key: &'static str,",
     '    pub win_vk: u8,',
@@ -94,6 +95,7 @@ function rustSource() {
     "    pub group: &'static str,",
     '}',
     '',
+    '#[rustfmt::skip]',
     'pub static BINDINGS: &[Binding] = &[');
   for (const b of spec.bindings) {
     L.push(`    Binding { key: ${q(b.key)}, win_vk: ${b.win}, mac_key: ${b.mac}, action: ${q(b.action)}, label: ${q(b.label)}, group: ${q(b.group)} },`);
@@ -103,10 +105,12 @@ function rustSource() {
     '    BINDINGS.iter().find(|b| b.key == key)',
     '}',
     '',
+    '#[allow(dead_code)]',
     "pub fn by_win_vk(vk: u8) -> Option<&'static Binding> {",
     '    BINDINGS.iter().find(|b| b.win_vk == vk)',
     '}',
     '',
+    '#[rustfmt::skip]',
     "pub static URL_ACTIONS: &[(&str, u8, &str)] = &[");
   for (const u of spec.urlActions) {
     L.push(`    (${q(u.key)}, ${u.win}, ${q(u.url)}),`);
@@ -117,10 +121,12 @@ function rustSource() {
     L.push(`    ${q(n.replace(/\.exe$/i, '').toLowerCase())},`);
   }
   L.push('];', '',
+    '#[rustfmt::skip]',
     "pub fn vk_to_key(vk: u8) -> &'static str {",
     '    match vk {');
   for (const b of spec.bindings) L.push(`        ${b.win} => ${q(b.key)},`);
   for (const u of spec.urlActions) L.push(`        ${u.win} => ${q(u.key)},`);
+  for (const m of spec.modifierRemap ?? []) L.push(`        ${m.win} => ${q(m.from)},`);
   L.push('        _ => ""', '    }', '}');
   return L.join('\n') + '\n';
 }

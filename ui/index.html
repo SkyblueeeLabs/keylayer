@@ -9,12 +9,12 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: transparent; }
   body {
-    font-size: var(--body-size); line-height: 1.5;
+    font-size: var(--body-size); line-height: 1.5; padding: 10px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
     color: var(--ink);
   }
   .panel {
-    width: var(--panel-width); margin: 10px; padding: var(--panel-padding);
+    width: var(--panel-width); margin: 0; padding: var(--panel-padding);
     background: #fff; border: 1px solid var(--edge); border-radius: var(--panel-radius);
     box-shadow: 0 10px 30px rgba(0,0,0,.12);
   }
@@ -109,25 +109,38 @@ function invoke(cmd, args = {}) {
   return Promise.resolve(null);
 }
 
-function paint(enabled, hookOk) {
+function paint(enabled, hookOk, autostart) {
   document.getElementById("enabled").checked = enabled;
+  if (typeof autostart === "boolean") {
+    document.getElementById("autostart").checked = autostart;
+  }
   const dot = document.getElementById("dot");
   const text = document.getElementById("statusText");
   dot.classList.toggle("off", !(enabled && hookOk));
-  text.textContent = !hookOk ? "键盘钩子未挂载 — 检查权限" : (enabled ? "生效中 · 键盘钩子已挂载" : "已停用");
+  text.textContent = !hookOk ? "键盘钩子未挂载 — 稍后自动重试" : (enabled ? "生效中 · 键盘钩子已挂载" : "已停用");
 }
 
 async function refresh() {
   if (!inTauri) { paint(true, true); return; }
   try {
     const s = await invoke("get_status");
-    if (s) paint(s.enabled, s.hook_ok);
+    if (s) paint(s.enabled, s.hook_ok, s.autostart);
   } catch (e) { paint(false, false); }
+}
+
+// 让无边框窗口贴合内容高度，避免透明区域挡住点击
+function fitWindow() {
+  if (!inTauri) return;
+  const panel = document.querySelector(".panel");
+  const h = Math.ceil(panel.getBoundingClientRect().height + 20);
+  invoke("resize_panel", { height: h });
 }
 
 render();
 if (!inTauri) document.getElementById("preview").hidden = false;
 refresh();
+requestAnimationFrame(fitWindow);
+if (document.fonts?.ready) document.fonts.ready.then(fitWindow);
 
 document.getElementById("enabled").addEventListener("change", async (e) => {
   const on = e.target.checked;
@@ -135,7 +148,13 @@ document.getElementById("enabled").addEventListener("change", async (e) => {
   paint(on, true);
 });
 document.getElementById("autostart").addEventListener("change", async (e) => {
-  if (inTauri) { try { await invoke("set_autostart", { on: e.target.checked }); } catch (_) {} }
+  if (!inTauri) return;
+  try {
+    const real = await invoke("set_autostart", { on: e.target.checked });
+    if (typeof real === "boolean") e.target.checked = real;
+  } catch (_) {
+    e.target.checked = !e.target.checked;
+  }
 });
 document.getElementById("quit").addEventListener("click", () => {
   if (inTauri) invoke("quit_app"); else window.close();

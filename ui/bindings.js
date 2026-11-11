@@ -1,10 +1,10 @@
 // 自动生成 — 请勿手动编辑
 // 来源: spec/keybindings.json
 // 重新生成: npm run spec
-// spec-hash: c44150cfb3a7
+// spec-hash: 19de9edbc0e3
 
 window.KeyLayerBindings = {
-  specHash: "c44150cfb3a7",
+  specHash: "19de9edbc0e3",
   rows: [["u","i","o"],["j","k","l"],["d","h","y"],["n","m","ralt"]],
   caps: {
   "i": {

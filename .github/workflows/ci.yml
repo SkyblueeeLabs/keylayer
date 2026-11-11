@@ -42,3 +42,5 @@ jobs:
       - run: npm --prefix windows install
       - name: cargo test（复用共享 40 项用例）
         run: cd windows/src-tauri && cargo test
+      - name: Tauri release 构建（不打包安装器）
+        run: npm --prefix windows run build -- --no-bundle

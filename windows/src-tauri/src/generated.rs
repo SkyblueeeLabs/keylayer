@@ -1,8 +1,9 @@
 // 自动生成 — 请勿手动编辑
 // 来源: spec/keybindings.json
 // 重新生成: npm run spec
-// spec-hash: c44150cfb3a7
+// spec-hash: 19de9edbc0e3
 
+#[allow(dead_code)]
 #[derive(Clone, Copy)]
 pub struct Binding {
     pub key: &'static str,
@@ -13,6 +14,7 @@ pub struct Binding {
     pub group: &'static str,
 }
 
+#[rustfmt::skip]
 pub static BINDINGS: &[Binding] = &[
     Binding { key: "i", win_vk: 73, mac_key: 34, action: "arrow-up", label: "↑", group: "direction" },
     Binding { key: "j", win_vk: 74, mac_key: 38, action: "arrow-left", label: "←", group: "direction" },
@@ -31,10 +33,12 @@ pub fn by_key(key: &str) -> Option<&'static Binding> {
     BINDINGS.iter().find(|b| b.key == key)
 }
 
+#[allow(dead_code)]
 pub fn by_win_vk(vk: u8) -> Option<&'static Binding> {
     BINDINGS.iter().find(|b| b.win_vk == vk)
 }
 
+#[rustfmt::skip]
 pub static URL_ACTIONS: &[(&str, u8, &str)] = &[
     ("b", 66, "https://www.baidu.com"),
     ("g", 71, "https://www.google.com"),
@@ -44,6 +48,7 @@ pub static WHITELIST_PREFIXES: &[&str] = &[
     "code",
 ];
 
+#[rustfmt::skip]
 pub fn vk_to_key(vk: u8) -> &'static str {
     match vk {
         73 => "i",
@@ -59,6 +64,8 @@ pub fn vk_to_key(vk: u8) -> &'static str {
         77 => "m",
         66 => "b",
         71 => "g",
+        165 => "RightAlt",
+        163 => "RightCtrl",
         _ => ""
     }
 }
