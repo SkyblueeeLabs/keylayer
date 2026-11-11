@@ -7,7 +7,7 @@
 <p align="center">打字和写代码时，让双手不用离开键盘。</p>
 
 <p align="center">
-  <a href="https://github.com/SkyblueeeLabs/keylayer/releases/latest"><img src="https://img.shields.io/github/v/release/SkyblueeeLabs/keylayer?label=Windows%20download" alt="Windows download"></a>
+  <a href="https://github.com/SkyblueeeLabs/keylayer/releases/latest"><img src="https://img.shields.io/github/v/release/SkyblueeeLabs/keylayer?label=download" alt="download"></a>
 </p>
 
 打错字时，直接用键盘调整，不必离开主键区去够鼠标选中再删。移动光标、跳到行首行尾、删除整行、滚动页面，都在同一套指法里完成；写代码时也一样。
@@ -20,13 +20,20 @@
 
 ## 下载
 
-Windows 版本在 [Releases](https://github.com/SkyblueeeLabs/keylayer/releases/latest) 提供：
+两端都在 [Releases](https://github.com/SkyblueeeLabs/keylayer/releases/latest) 提供，当前版本 `0.1.0`。
+
+**Windows**
 
 - **免安装**：`KeyLayer_0.1.0_x64_portable.exe`，单个文件，复制到任意目录即可，不需要同目录 DLL。
 - **安装版**：`KeyLayer_0.1.0_x64-setup.exe`（NSIS）或 `KeyLayer_0.1.0_x64_en-US.msi`。
-- 文件校验和见同页的 `SHA256SUMS.txt`。
 
-当前构建未做代码签名，Windows SmartScreen 可能提示，选择「更多信息 → 仍要运行」即可。macOS 版请从源码构建。
+**macOS**
+
+- `KeyLayer_0.1.0_macos_arm64.zip`：Apple Silicon（arm64），macOS 13+。解压后把 `KeyLayer.app` 拖进「应用程序」。
+
+文件校验和见同页的 `SHA256SUMS.txt`。
+
+两端构建都没有代码签名。Windows 上 SmartScreen 可能提示，选择「更多信息 → 仍要运行」即可；macOS 版是本机自签名、未经 Apple 公证，首次打开需右键 → 打开，或执行 `xattr -dr com.apple.quarantine /Applications/KeyLayer.app`。也可以直接从源码构建。
 
 ## 使用
 
@@ -57,13 +64,17 @@ Windows 的托盘面板里可以随时停用映射、设置开机自启或退出
 
 ### macOS
 
+下载 zip 解压后拖进「应用程序」，首次打开依次授权「设备控制与数据访问」和「输入监控」。被 Gatekeeper 拦住时右键 → 打开即可。
+
+自行构建：
+
 ```bash
 bash scripts/build.sh
 ./KeyLayer --self-test
 open "$PWD/KeyLayer.app"
 ```
 
-首次运行需要在系统设置里授予「设备控制与数据访问」和「输入监控」。重建后如果权限失效，运行：
+重建后如果权限失效，运行：
 
 ```bash
 bash scripts/fix-permissions.sh
