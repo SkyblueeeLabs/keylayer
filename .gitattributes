@@ -1,0 +1,17 @@
+# 统一用 LF。生成器按 LF 写入，scripts/check.mjs 又是逐字节字符串比较，
+# 一旦 Windows 端按 CRLF 检出，`npm run check` 会把所有生成文件误判为「已过期」。
+* text=auto eol=lf
+
+# 二进制：任何换行转换都会损坏
+*.png binary
+*.ico binary
+*.icns binary
+*.zip binary
+*.exe binary
+
+# 明确需要 LF 的文本
+*.sh    text eol=lf
+*.mjs   text eol=lf
+*.swift text eol=lf
+*.rs    text eol=lf
+*.json  text eol=lf

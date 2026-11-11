@@ -9,7 +9,6 @@
     "build": "tauri build"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2",
-    "serve": "^14"
+    "@tauri-apps/cli": "^2"
   }
 }

@@ -4,8 +4,6 @@
   "version": "0.1.0",
   "identifier": "com.skyblueee.keylayer",
   "build": {
-    "beforeDevCommand": "npx --yes serve -l 1420 ../ui",
-    "devUrl": "http://localhost:1420",
     "frontendDist": "../../ui"
   },
   "app": {

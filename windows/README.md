@@ -16,7 +16,7 @@
 ```bash
 cd windows
 npm install
-npm run dev        # 开发：启动项目根共享 ui/ 静态服务 + Tauri 面板
+npm run dev        # 开发：Tauri 内置 dev server 直接读项目根 ui/，改 HTML 热重载
 npm run build      # 产出单文件 exe / NSIS / MSI 安装包
 ```
 
@@ -39,7 +39,7 @@ cd windows/src-tauri && cargo test
 1. **Tauri v2 API**：`TrayIconBuilder::with_id("main")`、`WebviewWindowBuilder::new(app, ...)`、`Image::from_bytes`、`app.exit(0)` 在不同 2.x 小版本里签名可能变化，按编译器提示加 `.build(app)?` / `app.handle()` 等。
 2. **`withGlobalTauri`**：`tauri.conf.json` 里开启后，前端才能用 `window.__TAURI__.core.invoke`；若该配置项改名，改用 `@tauri-apps/api/core` 的打包导入。
 3. **`windows-sys` FFI**：`SetWindowsHookExW` 的 `HHOOK` 若被定义为整数而非指针，`hook.is_null()` 要改成 `hook == 0`；`GetMessageW` 的 `HWND` 参数同理。
-4. **`devUrl` / `frontendDist`**：共享 UI 在项目根 `ui/`，配置里写的是 `../../ui` 与 `../ui`；若 Tauri 执行 `beforeDevCommand` 的工作目录不同，按报错调整这两个相对路径。
+4. **`frontendDist`**：共享 UI 在项目根 `ui/`，配置里写的是 `../../ui`（相对 `tauri.conf.json` 所在目录）。dev 与 build 都走同一份配置，由 Tauri 内置 dev server 提供热重载，不依赖外部 `serve`。
 5. **图标**：`icon.ico` 是 PNG-in-ICO（Vista+ 支持）；若 Tauri 打包报图标格式错误，用 `tauri icon assets/icons/AppIcon-1024.png` 重新生成全套。
 
 ## 与原脚本的键位覆盖
