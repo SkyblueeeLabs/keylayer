@@ -6,6 +6,10 @@
 
 <p align="center">打字和写代码时，让双手不用离开键盘。</p>
 
+<p align="center">
+  <a href="https://github.com/SkyblueeeLabs/keylayer/releases/latest"><img src="https://img.shields.io/github/v/release/SkyblueeeLabs/keylayer?label=Windows%20download" alt="Windows download"></a>
+</p>
+
 打错字时，直接用键盘调整，不必离开主键区去够鼠标选中再删。移动光标、跳到行首行尾、删除整行、滚动页面，都在同一套指法里完成；写代码时也一样。
 
 <p align="center">
@@ -13,6 +17,16 @@
 </p>
 
 <p align="center">Windows 托盘面板 · macOS 菜单栏应用</p>
+
+## 下载
+
+Windows 版本在 [Releases](https://github.com/SkyblueeeLabs/keylayer/releases/latest) 提供：
+
+- **免安装**：`KeyLayer_0.1.0_x64_portable.exe`，单个文件，复制到任意目录即可，不需要同目录 DLL。
+- **安装版**：`KeyLayer_0.1.0_x64-setup.exe`（NSIS）或 `KeyLayer_0.1.0_x64_en-US.msi`。
+- 文件校验和见同页的 `SHA256SUMS.txt`。
+
+当前构建未做代码签名，Windows SmartScreen 可能提示，选择「更多信息 → 仍要运行」即可。macOS 版请从源码构建。
 
 ## 使用
 
@@ -37,10 +51,9 @@ Windows 的托盘面板里可以随时停用映射、设置开机自启或退出
 
 ### Windows
 
-- **便携版**：构建后取 `windows/src-tauri/target/release/keylayer.exe`，单个文件，复制到任意目录即可，不需要同目录 DLL。
-- **安装包**：构建后位于 `windows/src-tauri/target/release/bundle/`，含 NSIS 和 MSI。
-- 需要 **WebView2 Runtime**：Win11 自带，Win10 一般随 Edge 已安装。
-- 把 exe 挪到其他目录后，如果之前开过「开机自启」，需要在新位置重新勾选一次。
+- Windows 10/11 x64，需要 **WebView2 Runtime**：Win11 自带，Win10 一般随 Edge 已安装。
+- 免安装版不需要额外 DLL；把 exe 挪到其他目录后，如果之前开过「开机自启」，需要在新位置重新勾选一次。
+- 自行构建：`npm run build:win`，exe 和安装包在 `windows/src-tauri/target/release/`。
 
 ### macOS
 
